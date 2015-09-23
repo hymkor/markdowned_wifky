@@ -315,7 +315,7 @@ sub init_globals{
         '100_list'       => \&block_listing   ,
         '200_definition' => \&block_definition ,
         '300_midashi1'   => \&block_midashi1  ,
-        '400_midashi2'   => \&block_midashi2 ,
+        '400_midashi'    => \&block_midashi ,
         '500_centering'  => \&block_centering ,
         '600_quoting'    => \&block_quoting ,
         '700_table'      => \&block_table ,
@@ -2679,7 +2679,7 @@ sub cut_until_blankline{
             shift(@{$lines});
             last;
         }
-        last if $lines->[0] =~ /^\s*!/;
+        last if $lines->[0] =~ /^#/;
         last if $lines->[0] =~ /^\s*\-\-\-\s*$/;
         last if $mode ne '|' && $lines->[0] =~ /^\s*\|\|/;
         last if $mode ne '*' && $lines->[0] =~ /^\s*[\*\+]/;
@@ -2757,11 +2757,11 @@ sub block_midashi1{ ### <<...>>
     1;
 }
 
-sub block_midashi2{ ### !!!... ###
+sub block_midashi{ ### '#'
     my ($lines,$session)=@_;
-    return 0 unless $lines->[0] =~ /^\s*(\!{1,4})/s;
+    return 0 if $lines->[0] !~ /^\#+/;
 
-    &midashi( 3 - length($1) , $' , $session );
+    &midashi( length($&)-1 , $' , $session );
     shift(@{$lines});
     1;
 }
