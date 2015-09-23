@@ -2140,12 +2140,7 @@ sub strip_tag{
 }
 
 sub call_verbatim{
-    ${$_[0]} =~
-    s!^\s*\&lt;pre&gt;(.*?\n)\s*\&lt;/pre&gt;|^\s*8\&lt;(.*?\n)\s*\&gt;8|`(.)`(.*?)`\3`!
-    defined($4)
-    ? &verb('<tt class="pre">'.&cr2br($4).'</tt>')
-    : "\n\n<pre>".&verb(defined($1) ? $1 : $2)."</pre>\n\n"
-    !gesm;
+    ${$_[0]} =~ s!^\s*```(.*?\n)\s*```!&verb("\n\n<pre>$1</pre>\n\n")!gesm;
 }
 
 sub call_blockhtml{
