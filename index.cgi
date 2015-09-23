@@ -116,7 +116,7 @@ sub init_globals{
 
     $::target = ( $::config{target}
                 ? sprintf(' target="%s"',$::config{target}) : '' );
-    $::config{CSS} ||= 'CSS';
+    $::config{CSS} ||= '.CSS';
     $::config{FrontPage} ||= 'FrontPage';
     ( $::session_cookie = ( split(/[\\\/]/,$0) )[-1] ) =~ s/\.\w+$/_session/;
     $::remote_addr = ($::config{ignore_addr} ? 'NOIP' : ($ENV{REMOTE_ADDR}||'NOIP'));
@@ -215,16 +215,16 @@ sub init_globals{
     @::menubar = ();
     if( &is_signed() ){
         push( @{$::menubar{'100_FrontPage'}} ,
-            &anchor('Sidebar',{p=>'Sidebar'}) ,
-            &anchor('Header' ,{p=>'Header'}) ,
-            &anchor('Footer' ,{p=>'Footer'}) ,
-            &anchor('Footest',{p=>'Footest'}) ,
-            &anchor('Help'   ,{p=>'Help'}) ,
-            &anchor('CSS'    ,{p=>$::config{CSS}} ) ,
+            &anchor('.Sidebar',  {p=>'.Sidebar'}) ,
+            &anchor('.Header' ,  {p=>'.Header'}) ,
+            &anchor('.Signature',{p=>'.Signature'}) ,
+            &anchor('.Footer',   {p=>'.Footer'}) ,
+            &anchor('.Help'   ,  {p=>'.Help'}) ,
+            &anchor('.CSS'    ,  {p=>$::config{CSS}} ) ,
         );
 
         $::menubar{'900_Sign'} = [
-            &anchor('SignOut',{a=>'signout'},{rel=>'nofollow'}) ,
+            &anchor('SignOut',   {a=>'signout'},{rel=>'nofollow'}) ,
             &anchor('ChangeSign',{a=>'passwd'},{rel=>'nofollow'}) ,
         ];
         $::menubar{'500_Tools'} = [
@@ -352,19 +352,19 @@ sub init_globals{
             <div class="autopagerize_page_element">
                 &{main}
                 <div class="terminator">
-                    %{Footer}
+                    %{.Signature}
                 </div>
             </div>
             <div class="autopagerize_insert_before"></div>
             <div class="footest">
-                %{Footest}
+                %{.Footer}
             </div>
             <div class="copyright footer">
                 &{copyright}
             </div><!-- copyright -->
         </div><!-- main -->
         <div class="sidebar">
-        %{Sidebar}
+        %{.Sidebar}
         </div><!-- sidebar -->
         &{message}';
 
@@ -398,7 +398,7 @@ sub init_globals{
         &{message}';
 
     %::default_contents = (
-        &title2fname('CSS') => <<'HERE' ,
+        &title2fname('.CSS') => <<'HERE' ,
 p.centering,big{ font-size:200% }
 
 h2{background-color:#CCF}
@@ -448,12 +448,12 @@ span.frozen{ font-size:80% ; color:#008 ; font-weight:bold }
 }
 
 HERE
-    &title2fname("Header") => <<HERE ,
+    &title2fname(".Header") => <<HERE ,
 ((menubar))
 
 !!!! ((sitename))
 HERE
-    &title2fname("Help") => <<HERE ,
+    &title2fname(".Help") => <<HERE ,
 # Syntax Help
 
 ## URL Link
@@ -936,12 +936,12 @@ a.page_not_found{
             $::flag{userheader} = 'template';
         }else{
             &putenc('<div class="%s">' , $arg{divclass}||'main' );
-            &print_page( title=>'Header' , class=>'header' );
+            &print_page( title=>'.Header' , class=>'header' );
             $::flag{userheader} = 1;
         }
     }else{
         &putenc('<div class="%s">' , $arg{divclass}||'max' );
-        &print_page( title =>'Header' ,
+        &print_page( title =>'.Header' ,
                      source=>\$::default_contents{ &title2fname('Header')} );
     }
 }
@@ -1902,7 +1902,7 @@ sub print_template{
     my $template = $hash{template} || $::user_template;
     my %default=(
         header=>sub{
-            &::print_page( title=>'Header' );
+            &::print_page( title=>'.Header' );
             $::flag{userheader} = 1;
             &puts(&plugin({},'menubar')) unless $::flag{menubar_printed};
         },
@@ -2287,11 +2287,7 @@ sub plugin_outline{
             my $depth=-2;
             my $ss='';
             foreach my $p( @::outline ){
-                next if $p->{title} eq 'Header' ||
-                        $p->{title} eq 'Footer' ||
-                        $p->{title} eq 'Footest' ||
-                        $p->{title} eq 'Sidebar' ||
-                        $p->{title} eq 'Help';
+                next if $p->{title} =~ /^\./;
 
                 my $diff=$p->{depth} - $depth;
                 if( $diff > 0 ){
