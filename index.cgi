@@ -2141,6 +2141,7 @@ sub strip_tag{
 
 sub call_verbatim{
     ${$_[0]} =~ s!^\s*```(.*?\n)\s*```!&verb("\n\n<pre>$1</pre>\n\n")!gesm;
+    ${$_[0]} =~ s!`([^`]+)`!&verb("<tt>$1</tt>")!gesm;
 }
 
 sub call_blockhtml{
