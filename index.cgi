@@ -122,7 +122,6 @@ sub init_globals{
     $::remote_addr = ($::config{ignore_addr} ? 'NOIP' : ($ENV{REMOTE_ADDR}||'NOIP'));
 
     %::inline_plugin = (
-        'adminmenu'=> \&plugin_menubar ,
         'menubar'  => \&plugin_menubar ,
         'nomenubar'=> sub{ $::flag{menubar_printed}=1;'' } ,
         'pagename' => \&plugin_pagename ,
@@ -2533,7 +2532,7 @@ sub preprocess_attachment{
 }
 
 sub preprecess_htmltag{
-    ${$_[0]} =~ s!&lt;(/?(b|big|br|cite|code|del|dfn|em|hr|i|ins|kbd|q|s|samp|small|span|strike|strong|sup|sub|tt|u|var)\s*/?)&gt;!<$1>!gi;
+    ${$_[0]} =~ s!&lt;(/?(b|big|br|cite|code|del|dfn|em|hr|i|ins|kbd|q|s|samp|small|span|strike|strong|sup|sub|tt|u|var|h[1-6])\s*/?)&gt;!<$1>!gi;
 }
 
 sub preprocess_decorations{
