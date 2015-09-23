@@ -100,14 +100,9 @@ sub chdir_and_code{
     if( chdir $udir ){
         return;
     }
-    (my $edir = __FILE__ ) =~ s/\.\w+((\.\w+)*)$/.dat$1/;
-    if( chdir $edir ){
-        $::charset = 'EUC-JP';
-        return;
-    }
     mkdir($udir,0755);
     unless( chdir $udir ){
-        die("can not access $udir or $edir.");
+        die("can not access $udir");
     }
 }
 
