@@ -400,17 +400,21 @@ sub init_globals{
         &title2fname('.CSS') => <<'HERE' ,
 p.centering,big{ font-size:200% }
 
-h2{background-color:#CCF}
+h2{background-color:#CFC}
 
 h3{border-width:0px 1px 1px 0px;border-style:solid}
 
-h4{border-width:0 0 0 3mm;border-style:solid;border-color:#BBF;padding-left:1mm}
+h4{border-width:0 0 0 3mm;border-style:solid;border-color:#BFB;padding-left:1mm}
 
 dt,span.commentator{font-weight:bold;padding:1mm}
 
 span.comment_date{font-style:italic}
 
 a{ text-decoration:none }
+
+a:link{ color:green }
+
+a:visited{ color:darkgreen }
 
 a:hover{ text-decoration:underline }
 
@@ -430,11 +434,11 @@ pre{
 
 div.tag{  text-align:right }
 
-a.tag{ font-size:80%; background-color:#CCF }
+a.tag{ font-size:80%; background-color:#CFC }
 
-span.tagnum{ font-size:70% ; color:blue }
+span.tagnum{ font-size:70% ; color:green }
 
-span.frozen{ font-size:80% ; color:#008 ; font-weight:bold }
+span.frozen{ font-size:80% ; color:#080 ; font-weight:bold }
 
 @media screen{
  div.sidebar{ float:right; width:25% ; word-break: break-all;font-size:90%}
