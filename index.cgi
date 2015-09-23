@@ -2721,25 +2721,22 @@ sub block_listing{ ### <UL>... block ###
     my $indent=$list[0]->[0];
     my $level=0;
     &puts('<ul>');
-    my $li_open=0;
+    my $close='';
     foreach( @list ){
         my $body=&preprocess($_->[1]);
         if( $_->[0] < $indent && $level > 0 ){
             $level--;
-            &puts('</li>') if $li_open;
-            &puts("</ul></li><li>$body");
+            &puts("$close</ul></li><li>$body");
         }elsif( $_->[0] > $indent ){
             $level++;
             &puts("<ul><li>$body");
         }else{
-            &puts('</li>') if $li_open;
-            &puts("<li>$body");
+            &puts("$close<li>$body");
         }
         $indent = $_->[0];
-        $li_open = 1;
+        $close = '</li>';
     }
-    &puts('</li>') if $li_open;
-    &puts( ($level x '</ul></li>').'</ul>');
+    &puts( $close . ('</ul></li>' x $level).'</ul>');
     1;
 }
 
