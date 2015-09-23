@@ -314,7 +314,6 @@ sub init_globals{
     %::block_syntax_plugin = (
         '100_list'       => \&block_listing   ,
         '200_definition' => \&block_definition ,
-        '300_midashi1'   => \&block_midashi1  ,
         '400_midashi'    => \&block_midashi ,
         '500_centering'  => \&block_centering ,
         '600_quoting'    => \&block_quoting ,
@@ -2725,29 +2724,6 @@ sub block_definition{ ### <DL>...</DL> block ###
 
     my @s=split(/\n\s*:/, &preprocess($fragment,$session) );
     &puts('<dl>',map( /^:/ ? "<dd>$'</dd>\r\n" : "<dt>$_</dt>\r\n",@s),'</dl>');
-    1;
-}
-
-sub block_midashi1{ ### <<...>>
-    my ($lines,$session)=@_;
-    return 0 unless $lines->[0] =~ /^\s*((\&lt\;){2,6})(?!\{)/;
-    my $lt=$1;
-    my $nest=length($lt)/4-2;
-
-    $lines->[0] = $';
-    my $fragment="";
-    while( scalar(@{$lines}) > 0 ){
-        my $line=shift(@{$lines});
-        last if $line =~ /^\s*$/;
-        if( $line =~ /(\&gt;){2,6}\s*$/ ){
-            $fragment .= $`;
-            &midashi( $nest , $fragment , $session );
-            return 1;
-        }else{
-            $fragment .= $line;
-        }
-    }
-    &puts('<p>'.&preprocess($lt.$fragment).'</p>');
     1;
 }
 
