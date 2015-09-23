@@ -2524,7 +2524,6 @@ sub preprocess_decorations{
     $$text =~ s|__(.*?)__|<u>$1</u>|gs;
     $$text =~ s|==(.*?)=={(.*?)}|<del>$1</del><ins>$2</ins>|gs;
     $$text =~ s|==(.*?)==|<strike>$1</strike>|gs;
-    $$text =~ s|``(.*?)``|'<tt class="pre">'.&cr2br($1).'</tt>'|ges;
     $$text =~ s/\n/<br>\n/g if $::config{autocrlf} ;
 }
 
