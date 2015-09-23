@@ -309,8 +309,7 @@ sub init_globals{
     %::inline_syntax_plugin = (
         '100_innerlink1' => \&preprocess_innerlink1 ,
         '200_innerlink2' => \&preprocess_innerlink2 ,
-        '300_outerlink1' => \&preprocess_outerlink1  ,
-        '400_outerlink2' => \&preprocess_outerlink2 ,
+        '400_outerlink2' => \&preprocess_outerlink ,
         '500_attachment' => \&preprocess_attachment  ,
         '600_htmltag'    => \&preprecess_htmltag ,
         '700_decoration' => \&preprocess_decorations ,
@@ -2502,13 +2501,8 @@ sub preprocess_innerlink2{ ### [[ ... | ... ] ###
         &inner_link($session,defined($1)?$1:$2,$2)!ge;
 }
 
-sub preprocess_outerlink1{ ### http://...{ ... } style ###
-    ${$_[0]} =~ s!($::RXURL)\{([^\}]+)\}!
-        &verb(sprintf('<a href="%s"%s>',$1,$::target)).$2.'</a>'!goe;
-}
-
-sub preprocess_outerlink2{ ### [...|http://...] style ###
-    ${$_[0]} =~ s!\[([^\|]+)\|((?:\.\.?/|$::PROTOCOL://)[^\]]+)\]!
+sub preprocess_outerlink{ ### [...](http://...) style ###
+    ${$_[0]} =~ s!\[([^\]]+)\]\(((?:\.\.?/|$::PROTOCOL://)[^\)]+)\)!
         &verb(sprintf('<a href="%s"%s>',$2,$::target)).$1.'</a>'!goe;
 }
 
