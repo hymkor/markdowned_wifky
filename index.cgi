@@ -458,81 +458,105 @@ HERE
 
 ## URL Link
 
-```[text](http://example.com//)
-http://example.com/to{text}```
+```
+[text](http://example.com//)
+http://example.com/to{text}
+```
 
 ## Page Link
 
-```[[PageName]]
+```
+[[PageName]]
 [[text|PageName]]
 >>{PageName}
->>{PageName}{text}```
+>>{PageName}{text}
+```
 
 ## Image or Attachment
 
-```<<{filename}
-<<{filename}{text}```
+```
+<<{filename}
+<<{filename}{text}
+```
 
 ## Text Decoration
 
-```'' Italic ''
+```
+'' Italic ''
 ''' Bold '''
 '''' Large-font ''''
-`` Typewriter ``
-`?` Preformatted `?`
+`Preformatted`
 __ Underline __
 == Strike ==
 == DEL =={ INS }
-((br)) line feed```
+((br)) line feed
+```
 
 ## Special Letter
 
-`?`((amp)) &    ((bq)) `
+```
+((amp)) &    ((bq)) `
 ((lt))  <    ((gt)) >
 ((lp))  (    ((rp)) )
 ((lb))  [    ((rb)) ] 
-((ll))  ((   ((rr)) ))`?`
+((ll))  ((   ((rr)) ))
+```
 
 ## Headline
 
-```# section-name
+```
+# section-name
 ## subsection-name
 ### subsubsectino-name
 
->> Centering and Large-font <<```
+>> Centering and Large-font <<
+```
 
 ## Itemize
 
-```* item1
+```
+* item1
 ** item1-1
-** item1-2```
+** item1-2
+```
 
 ## Enumerate
 
-```+ item1
+```
++ item1
 + item2
-++ item2-1```
+++ item2-1
+```
 
 ## Table
 
-```|| 1-1 | 1-2 | 1-3
-|| 2-1 | 2-2 | 2-3```
+```
+|| 1-1 | 1-2 | 1-3
+|| 2-1 | 2-2 | 2-3
+```
 
 ## Description
 
-```:item
-::description```
+```
+:item
+::description
+```
 
 ## Quotation
 
-```6<
+```
+6<
  quotation
->9```
+>9
+```
 
 ## Preformatted text
 
-``8((lt))((br)) preformatted-text((br))((gt))8``
-
+<blockquote>
+((bq))((bq))((bq))((br))
+preformatted-text((br))
+((bq))((bq))((bq))
+</blockquote>
 HERE
     );
 
