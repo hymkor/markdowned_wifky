@@ -464,7 +464,7 @@ HERE
 
 !! URL Link
 
-```[text|http://example.com//]
+```[text](http://example.com//)
 http://example.com/to{text}```
 
 !! Page Link
