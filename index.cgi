@@ -393,7 +393,7 @@ sub init_globals{
             </div><!-- copyright -->
         </div><!-- main -->
         <div class="sidebar">
-            %{Help}
+            %{.Help}
         </div>
         &{message}';
 
