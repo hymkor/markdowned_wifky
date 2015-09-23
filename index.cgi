@@ -2683,18 +2683,20 @@ sub cut_until_blankline{
     my $mode =shift || '';
     my $fragment=shift(@{$lines});
     while( scalar(@{$lines}) > 0 ){
-        if( $lines->[0] =~ /^\s*$/ ){
+        my $line=$lines->[0];
+        if( $line =~ /^\s*$/ ){
             shift(@{$lines});
             last;
         }
-        last if $lines->[0] =~ /^#/;
-        last if $lines->[0] =~ /^\s*\-\-\-\s*$/;
-        last if $mode ne '|' && $lines->[0] =~ /^\s*\|\|/;
-        last if $mode ne '*' && $lines->[0] =~ /^\s*[\*\+]/;
-        last if $mode ne ':' && $lines->[0] =~ /^\s*\:/;
-        last if $mode ne '<' && $lines->[0] =~ /^\s*(&lt;){2,6}(?!\{)/;
-        last if $mode ne '>' && $lines->[0] =~ /^\s*&gt;&gt;(?!\{)/;
-        last if $mode ne '"' && $lines->[0] =~ /^\s*&quot;&quot;/;
+        last if $line =~ /^#/;
+        last if $line =~ /^\s*\-\-\-\s*$/;
+        last if $lines->[1] =~ /^[\-\=]+$/;
+        last if $mode ne '|' && $line =~ /^\s*\|\|/;
+        last if $mode ne '*' && $line =~ /^\s*[\*\+]/;
+        last if $mode ne ':' && $line =~ /^\s*\:/;
+        last if $mode ne '<' && $line =~ /^\s*(&lt;){2,6}(?!\{)/;
+        last if $mode ne '>' && $line =~ /^\s*&gt;&gt;(?!\{)/;
+        last if $mode ne '"' && $line =~ /^\s*&quot;&quot;/;
         $fragment .= "\n";
         $fragment .= shift(@{$lines});
     }
@@ -2744,10 +2746,20 @@ sub block_definition{ ### <DL>...</DL> block ###
 
 sub block_midashi{ ### '#'
     my ($lines,$session)=@_;
-    return 0 if $lines->[0] !~ /^\#+/;
-
-    &midashi( length($&)-1 , $' , $session );
-    shift(@{$lines});
+    my $line = $lines->[0];
+    my $next = $lines->[1] || '';
+    if( $line =~ /^\#+/ ){
+        &midashi( length($&)-1 , $' , $session );
+        shift(@{$lines});
+    }elsif( $next =~ /^\=+$/ ){
+        &midashi( 0 , $line , $session );
+        splice(@{$lines},0,2);
+    }elsif( $next =~ /^\-+$/ ){
+        &midashi( 1 , $line , $session );
+        splice(@{$lines},0,2);
+    }else{
+        return 0;
+    }
     1;
 }
 
