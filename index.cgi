@@ -2691,7 +2691,7 @@ sub cut_until_blankline{
         last if $line =~ /^\s*\-\-\-\s*$/;
         last if $lines->[1] =~ /^[\-\=]+$/;
         last if $mode ne '|' && $line =~ /^\s*\|\|/;
-        last if $mode ne '*' && $line =~ /^\s*[\*\+]/;
+        last if $mode ne '*' && $line =~ /^\s*[\*\+\-]/;
         last if $mode ne ':' && $line =~ /^\s*\:/;
         last if $mode ne '<' && $line =~ /^\s*(&lt;){2,6}(?!\{)/;
         last if $mode ne '>' && $line =~ /^\s*&gt;&gt;(?!\{)/;
@@ -2702,32 +2702,44 @@ sub cut_until_blankline{
     $fragment;
 }
 
-sub block_listing{ ### <UL><OL>... block ###
+sub block_listing{ ### <UL>... block ###
     my ($lines,$session)=@_;
-    return 0 unless $lines->[0] =~ /^\s*[\*\+]/;
-    my $fragment=&cut_until_blankline($lines,'*');
-
-    my @stack;
-    foreach( split(/\n[ \t]*(?=[\*\+])/,&preprocess($fragment,$session))){
-        my ($mark,$text)=(/\A\s*(\*+|\++)/ ? ($1,$') : ('',$_) );
-        my $nest=length($mark);
-        my $diff=$nest - scalar(@stack);
-        if( $diff > 0 ){### more deep ###
-            if( $mark =~ /\+/ ){
-                &puts( '<ol><li>' x $diff );
-                push( @stack,('</li></ol>') x $diff );
-            }else{
-                &puts('<ul><li>' x $diff );
-                push( @stack,('</li></ul>') x $diff );
-            }
-            $nest > 0 and &puts( $text );
-        }else{
-            $diff < 0    and &puts( reverse splice(@stack,$nest) );
-            $#stack >= 0 and &puts( '</li>' );
-            $nest > 0    and &puts( "<li>$text" );
+    my @list;
+    while(1){
+        my $line=$lines->[0];
+        if( $line =~ /\A(\s*)[\*\+\-]/ ){
+            push(@list,[ length($1) , $'] );
+            shift(@{$lines});
+        }elsif( /^\s*$/ ){
+            last;
+        }elsif( @list ){
+            $list[$#list]->[1] .= shift(@{$lines});
         }
     }
-    &puts( reverse @stack );
+    return 0 unless @list;
+
+    my $indent=$list[0]->[0];
+    my $level=0;
+    &puts('<ul>');
+    my $li_open=0;
+    foreach( @list ){
+        my $body=&preprocess($_->[1]);
+        if( $_->[0] < $indent && $level > 0 ){
+            $level--;
+            &puts('</li>') if $li_open;
+            &puts("</ul></li><li>$body");
+        }elsif( $_->[0] > $indent ){
+            $level++;
+            &puts("<ul><li>$body");
+        }else{
+            &puts('</li>') if $li_open;
+            &puts("<li>$body");
+        }
+        $indent = $_->[0];
+        $li_open = 1;
+    }
+    &puts('</li>') if $li_open;
+    &puts( ($level x '</ul></li>').'</ul>');
     1;
 }
 
