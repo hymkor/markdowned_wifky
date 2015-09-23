@@ -455,26 +455,26 @@ HERE
 !!!! ((sitename))
 HERE
     &title2fname("Help") => <<HERE ,
-!!! Syntax Help
+# Syntax Help
 
-!! URL Link
+## URL Link
 
 ```[text](http://example.com//)
 http://example.com/to{text}```
 
-!! Page Link
+## Page Link
 
 ```[[PageName]]
 [[text|PageName]]
 >>{PageName}
 >>{PageName}{text}```
 
-!! Image or Attachment
+## Image or Attachment
 
 ```<<{filename}
 <<{filename}{text}```
 
-!! Text Decoration
+## Text Decoration
 
 ```'' Italic ''
 ''' Bold '''
@@ -486,7 +486,7 @@ __ Underline __
 == DEL =={ INS }
 ((br)) line feed```
 
-!! Special Letter
+## Special Letter
 
 `?`((amp)) &    ((bq)) `
 ((lt))  <    ((gt)) >
@@ -494,49 +494,43 @@ __ Underline __
 ((lb))  [    ((rb)) ] 
 ((ll))  ((   ((rr)) ))`?`
 
-!! Headline
+## Headline
 
-```!!!! site-name
-
-!!! section-name
-!! subsection-name
-! subsubsectino-name
-
-<< section-name >>
-<<< subsection-name >>>
-<<<< subsubsection-name >>>>
+```# section-name
+## subsection-name
+### subsubsectino-name
 
 >> Centering and Large-font <<```
 
-!! Itemize
+## Itemize
 
 ```* item1
 ** item1-1
 ** item1-2```
 
-!! Enumerate
+## Enumerate
 
 ```+ item1
 + item2
 ++ item2-1```
 
-!! Table
+## Table
 
 ```|| 1-1 | 1-2 | 1-3
 || 2-1 | 2-2 | 2-3```
 
-!! Description
+## Description
 
 ```:item
 ::description```
 
-!! Quotation
+## Quotation
 
 ```6<
  quotation
 >9```
 
-!! Preformatted text
+## Preformatted text
 
 ``8((lt))((br)) preformatted-text((br))((gt))8``
 
