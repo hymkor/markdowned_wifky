@@ -1756,7 +1756,7 @@ sub action_upload{
     }else{
         &write_file( $fn , \$::form{'newattachment_b'} );
         if( $::form{append_tag} ){
-            $::form{text_t} .= "\n<<{".$::form{'newattachment_b.filename'}.'}';
+            $::form{text_t} .= "\n((ref \"".$::form{'newattachment_b.filename'}.'"))';
         }
         &do_preview();
     }
