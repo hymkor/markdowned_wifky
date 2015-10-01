@@ -152,6 +152,7 @@ sub init_globals{
         'remote_addr' => sub{ $::remote_addr; } ,
         'taglist'  => \&plugin_taglist ,
         'title'  => sub{ ($::page_alias = $_[0]->{argv}) =~ s/<[^>]*>//g; $::page_alias },
+        'ref' => \&plugin_ref,
     );
 
     %::action_plugin = (
@@ -304,7 +305,6 @@ sub init_globals{
         '100_innerlink1' => \&preprocess_innerlink1 ,
         '200_innerlink2' => \&preprocess_innerlink2 ,
         '400_outerlink2' => \&preprocess_outerlink ,
-        '500_attachment' => \&preprocess_attachment  ,
         '600_htmltag'    => \&preprecess_htmltag ,
         '700_decoration' => \&preprocess_decorations ,
         '800_plugin'     => \&preprocess_plugin ,
@@ -2513,7 +2513,7 @@ sub preprocess_outerlink{ ### [...](http://...) style ###
         &verb(sprintf('<a href="%s"%s>',$2,$::target)).$1.'</a>'!goe;
 }
 
-sub attach2tag{
+sub plugin_ref{
     my ($session,$nm,$label)=@_;
     my ($p,$f)=($session->{title},&denc($nm));
     $label ||= $nm;
@@ -2528,11 +2528,6 @@ sub attach2tag{
     }else{
         &verb(sub{$::ref{$nm} || qq(<blink class="attachment_not_found">$nm</blink>)});
     }
-}
-
-
-sub preprocess_attachment{
-    ${$_[0]} =~ s|&lt;&lt;\{([^\}]+)\}(?:\{([^\}]+)\})?|&attach2tag($_[1],$1,$2)|ge;
 }
 
 sub preprecess_htmltag{
