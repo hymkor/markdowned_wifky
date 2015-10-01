@@ -463,7 +463,6 @@ HERE
 
 ```
 [text](http://example.com//)
-http://example.com/to{text}
 ```
 
 ## Page Link
@@ -478,8 +477,7 @@ http://example.com/to{text}
 ## Image or Attachment
 
 ```
-<<{filename}
-<<{filename}{text}
+((ref FileName Title))
 ```
 
 ## Text Decoration
@@ -519,16 +517,8 @@ __ Underline __
 
 ```
 * item1
-** item1-1
-** item1-2
-```
-
-## Enumerate
-
-```
-+ item1
-+ item2
-++ item2-1
+  * item1-1
+    * item1-2
 ```
 
 ## Table
