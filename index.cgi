@@ -834,9 +834,9 @@ sub form_attachment{
             if( !&is_signed() && ! &w_ok($fn) ){
                 &puts(' disabled');
             }
-            &putenc('><input type="text" name="dummy" readonly value="&lt;&lt;{%s}"
+            &putenc('><input type="text" name="dummy" readonly value="((ref &quot;%s&quot;))"
                     size="%d" style="font-family:monospace"
-                    onClick="this.select();">', $attach, length($attach)+4 );
+                    onClick="this.select();">', $attach, length($attach)+10);
             &puts('('.&anchor('download',{ a=>'cat' , p=>$::form{p} , f=>$attach } ).':' );
             &putenc('%d bytes, at %s', (stat $fn)[7],&mtime($fn));
             &puts(' <span class="frozen">&lt;frozen&gt;</span>') unless &w_ok();
