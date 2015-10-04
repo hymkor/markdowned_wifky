@@ -483,9 +483,7 @@ HERE
 ## Text Decoration
 
 ```
-'' Italic ''
-''' Bold '''
-'''' Large-font ''''
+** Bold **
 `Preformatted`
 __ Underline __
 == Strike ==
@@ -2528,6 +2526,7 @@ sub preprocess_decorations{
     my $text=shift;
     $$text =~ s|^//.*$||mg;
     $$text =~ s|&#39;&#39;&#39;&#39;(.*?)&#39;&#39;&#39;&#39;|<big>$1</big>|gs;
+    $$text =~ s|\*\*(.*)?\*\*|<strong>$1</strong>|gs;
     $$text =~ s|&#39;&#39;&#39;(.*?)&#39;&#39;&#39;|<strong>$1</strong>|gs;
     $$text =~ s|&#39;&#39;(.*?)&#39;&#39;|<em>$1</em>|gs;
     $$text =~ s|__(.*?)__|<u>$1</u>|gs;
