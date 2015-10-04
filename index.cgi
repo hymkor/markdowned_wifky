@@ -461,14 +461,18 @@ HERE
 ## URL Link
 
 ```
-[text](http://example.com//)
+[text](http://example.com/)
+http://example.com/
 ```
 
 ## Page Link
 
 ```
-[[PageName]]
-[[text|PageName]]
+[[pagename]]
+[[text|pagename]]
+"pagename" (only if pagename exists)
+\xE3\x80\x8Cpagename\xE3\x80\x8D (only if pagename exists)
+\xE3\x80\x8Epagename\xE3\x80\x8F (only if pagename exists)
 ```
 
 ## Image or Attachment
@@ -2176,10 +2180,11 @@ sub call_blockhtml_sub{
     qq(\n\n<${tag} class="block">).&verb($::print)."</${tag}>\n\n";
 }
 
+sub inner_link_{
+    my ($session,$symbol,$title_and_sharp) = @_;
+    $title_and_sharp ||= $symbol;
+    my ($title,$sharp) = split(/(?=#[pf][0-9mt])/,$title_and_sharp);
 
-sub inner_link{
-    my ($session,$symbol,$title,$sharp)
-        = ($_[0], $_[1] , split(/(?=#[pf][0-9mt])/,$_[2]) );
     if( $title =~ /^#/ ){
         ($title,$sharp)=($session->{title},$title);
     }else{
@@ -2188,10 +2193,18 @@ sub inner_link{
 
     if( &object_exists($title) ){
         &anchor( $symbol , { p=>$title } , { class=>'wikipage' } , $sharp);
-    }elsif( $::config{notfound2newpage} ){
-        &anchor( $symbol , { p=>$title , a=>'edt' } , { class=>'page_not_found' } );
     }else{
-        qq(<blink class="page_not_found">$symbol?</blink>);
+        "";
+    }
+}
+
+sub inner_link{
+    if( my $s=&inner_link_ ){
+        $s;
+    }elsif( $::config{notfound2newpage} ){
+        &anchor( $_[1] , { p=>$_[2] , a=>'edt' } , { class=>'page_not_found' } );
+    }else{
+        qq(<blink class="page_not_found">$_[1]?</blink>);
     }
 }
 
@@ -2485,6 +2498,9 @@ sub preprocess_innerlink{ ### [[ ... | ... ]] ###
     my ($text,$session)=@_;
     $$text =~ s!\[\[(?:([^\|\]]+)\|)?(.+?)\]\]!
         &inner_link($session,defined($1)?$1:$2,$2)!ge;
+    $$text =~ s!(?<=\xE3\x80\x8C).*?(?=\xE3\x80\x8D)!&inner_link_($session,$&) || $&!ge;
+    $$text =~ s!(?<=\xE3\x80\x8E).*?(?=\xE3\x80\x8F)!&inner_link_($session,$&) || $&!ge;
+    $$text =~ s!(?<=&quot;).*?(?=&quot;)!&inner_link_($session,$&) || $&!ge;
 }
 
 sub preprocess_outerlink{ ### [...](http://...) style ###
