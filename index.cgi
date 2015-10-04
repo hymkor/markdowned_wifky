@@ -302,8 +302,7 @@ sub init_globals{
         ],
     );
     %::inline_syntax_plugin = (
-        '100_innerlink1' => \&preprocess_innerlink1 ,
-        '200_innerlink2' => \&preprocess_innerlink2 ,
+        '200_innerlink2' => \&preprocess_innerlink ,
         '400_outerlink2' => \&preprocess_outerlink ,
         '600_htmltag'    => \&preprecess_htmltag ,
         '700_decoration' => \&preprocess_decorations ,
@@ -470,8 +469,6 @@ HERE
 ```
 [[PageName]]
 [[text|PageName]]
->>{PageName}
->>{PageName}{text}
 ```
 
 ## Image or Attachment
@@ -2484,13 +2481,7 @@ sub cr2br{
     $s;
 }
 
-sub preprocess_innerlink1{ ### >>{ ... }{ ... } ###
-    my ($text,$session)=@_;
-    $$text =~ s|&gt;&gt;\{([^\}]+)\}(?:\{([^\}]*)\})?|
-        &inner_link($session,defined($2)?$2:$1,$1)|ge;
-}
-
-sub preprocess_innerlink2{ ### [[ ... | ... ] ###
+sub preprocess_innerlink{ ### [[ ... | ... ]] ###
     my ($text,$session)=@_;
     $$text =~ s!\[\[(?:([^\|\]]+)\|)?(.+?)\]\]!
         &inner_link($session,defined($1)?$1:$2,$2)!ge;
@@ -2525,7 +2516,6 @@ sub preprecess_htmltag{
 sub preprocess_decorations{
     my $text=shift;
     $$text =~ s|^//.*$||mg;
-    $$text =~ s|&#39;&#39;&#39;&#39;(.*?)&#39;&#39;&#39;&#39;|<big>$1</big>|gs;
     $$text =~ s|\*\*(.*)?\*\*|<strong>$1</strong>|gs;
     $$text =~ s|&#39;&#39;&#39;(.*?)&#39;&#39;&#39;|<strong>$1</strong>|gs;
     $$text =~ s|&#39;&#39;(.*?)&#39;&#39;|<em>$1</em>|gs;
