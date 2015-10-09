@@ -417,7 +417,7 @@ a:visited{ color:darkgreen }
 
 a:hover{ text-decoration:underline }
 
-pre,blockquote{ background-color:#DDD ; border:solid 1px #888 }
+pre,blockquote{ background-color:#DDD ; padding:2mm }
 
 table.block{ margin-left:1cm ; border-collapse: collapse;}
 
