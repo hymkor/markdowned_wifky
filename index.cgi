@@ -2689,7 +2689,7 @@ sub cut_until_blankline{
         last if $mode ne ':' && $line =~ /^\s*\:/;
         last if $mode ne '<' && $line =~ /^\s*(&lt;){2,6}(?!\{)/;
         last if $mode ne '>' && $line =~ /^\s*&gt;&gt;(?!\{)/;
-        last if $mode ne '"' && $line =~ /^\s*&quot;&quot;/;
+        last if $line =~ /^&gt;/;
         $fragment .= "\n";
         $fragment .= shift(@{$lines});
     }
@@ -2787,14 +2787,14 @@ sub block_centering{ ### >> ... <<
     1;
 }
 
-sub block_quoting{ ### "" ...
+sub block_quoting{ ### > ...
     my ($lines,$session)=@_;
-    return 0 unless $lines->[0] =~ /^&quot;&quot;/s;
-
-    my $fragment = &cut_until_blankline($lines,'"');
-
-    $fragment =~ s/^&quot;&quot;//gm;
-    $fragment =~ s/^$/<br><br>/gm;
+    return 0 unless $lines->[0] =~ /^&gt;/s;
+    my $fragment = "";
+    do{
+        $fragment .= $';
+        shift(@$lines);
+    }while( $lines->[0] =~ /^&gt;/ );
     &puts('<blockquote class="block">'.&preprocess($fragment,$session).'</blockquote>' );
     1;
 }
