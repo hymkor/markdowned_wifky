@@ -718,16 +718,15 @@ sub title2mtime{
     &mtime( &title2fname(@_) );
 }
 sub fname2title{
-    (my $s=shift) =~ s/\%([0-9A-Fa-f][0-9A-Fa-f])/pack('H*',$1)/eg;
-    $s;
+    pack('h*',$_[0]);
 }
 sub title2fname{
-    my @r;
-    foreach my $s (@_){
-        (my $r=$s) =~ s/([^0-9a-zA-Z])/'%'.unpack('H2',$1)/eg;
-        push(@r,$r);
+    my $fn=join('__',map(unpack('h*',$_),@_) );
+    if( $fn =~ /^(\w+)$/ ){
+        $1;
+    }else{
+        die("$fn: invalid filename");
     }
-    join('__',@r);
 }
 sub percent{
     my $s = shift;
@@ -1485,7 +1484,7 @@ sub action_rename{
         die("!The new page name '$newtitle' is already used.!") if -f $newfname;
 
         my @list = map {
-            my $aname=&title2fname($_);
+            my $aname=unpack('h*',$_);
             my $older="${fname}__${aname}" ;
             my $newer="${newfname}__${aname}";
             die("!The new page name '$newtitle' is already used.!") if -f $newer;
@@ -2048,9 +2047,9 @@ sub cache_update{
     unless( %::contents || @::etcfiles ){
         opendir(DIR,'.') or die('can\'t read work directory.');
         while( my $fn=readdir(DIR) ){
-            if( my @x=($fn=~/^((?:[0-9A-Za-z%])+)(?:__((?:[0-9A-Za-z%])+))?$/)){
+            if( my @x=($fn=~/^((?:[0-9a-f][0-9a-f])+)(?:__((?:[0-9a-f][0-9a-f])+))?$/)){
                 $fn=$&; # for taint mode
-                my $title=&fname2title($x[0]);
+                my $title=pack('h*',$x[0]);
                 my $p= $::contents{$title} ||= $::xcontents{$x[0]} ||={
                     fname=>$x[0] ,
                     title=>$title ,
@@ -2060,7 +2059,7 @@ sub cache_update{
                     mtime => &mtime($x[0]) ,
                 };
                 if( $x[1] ){
-                    my $aname=&fname2title($x[1]);
+                    my $aname=pack('h*',$x[1]);
                     $p->{attach}->{$aname} = $fn;
                     if( substr($x[1],0,2) eq '00' ){
                         my $label=pack('h*',substr($x[1],2));
@@ -2345,6 +2344,7 @@ sub ls_core{
     push(@args,'*') unless @args;
 
     my @patterns = map {
+        s/([^\*\?]+)/unpack('h*',$1)/eg;
         s/\?/../g;
         s/\*/.*/g;
         '^'.$_.'$';
@@ -2410,8 +2410,8 @@ sub plugin_comment{
     $session->{"comment.$comid"} = 1;
 
     my $buf = sprintf('<div class="comment" id="c_%s_%s">%s<div class="commentshort">',
-                &title2fname($::form{p}) ,
-                &title2fname($comid) ,
+                unpack('h*',$::form{p}) ,
+                unpack('h*',$comid) ,
                 $caption );
     my $input_form = $opt{f} ? '' : sprintf(<<HTML
 <div class="form">
