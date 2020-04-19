@@ -453,7 +453,7 @@ HERE
     &title2fname(".Header") => <<HERE ,
 ((menubar))
 
-!!!! ((sitename))
+<h1>((sitename))</h1>
 HERE
     &title2fname(".Help") => <<HERE ,
 # Syntax Help
