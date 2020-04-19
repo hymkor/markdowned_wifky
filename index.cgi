@@ -12,7 +12,7 @@ $::charset  = 'UTF-8';
 %::form     = %::forms = ();
 $::me       = $::postme = $ENV{SCRIPT_NAME} || (split(/[\\\/]/,$0))[-1];
 $::print    = ' 'x 10000; $::print = '';
-%::config   = ( crypt => '' , sitename => 'wifky!' );
+%::config   = ( crypt => '' , sitename => 'markdowned wifky!' );
 %::flag     = ();
 %::cnt      = ();
 
