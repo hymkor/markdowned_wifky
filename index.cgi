@@ -323,6 +323,7 @@ sub init_globals{
     );
     %::call_syntax_plugin = (
         '100_verbatim'       => \&call_verbatim ,
+        '150_registerurl'    => \&call_register_url ,
         '200_blockhtml'      => \&call_blockhtml ,
         '500_block_syntax'   => \&call_block ,
         '800_close_sections' => \&call_close_sections ,
@@ -2219,6 +2220,18 @@ sub call_verbatim{
     ${$_[0]} =~ s!`([^`]+)`!&verb("<tt>$1</tt>")!gesm;
 }
 
+sub register_url{
+    my ($key,$val,$session) = @_;
+    my $urlmap = ($session->{urlmap} ||= {});
+    $urlmap->{$key} = $val;
+    '';
+}
+
+sub call_register_url{
+    my ($html,$session) = @_;
+    $$html =~ s!^\[(.*?)\]:\s+(.*?)\s*$!&register_url($1,$2,$session)!gesm;
+}
+
 sub call_blockhtml{
     ${$_[0]} =~
     s!(?:&lt;blockquote&gt;|6&lt;)(.*?)(?:&lt;/blockquote&gt;|&gt;9)!&call_blockhtml_sub($1,$_[1],'blockquote')!gesmi;
@@ -2562,9 +2575,21 @@ sub preprocess_innerlink{ ### [[ ... | ... ]] ###
     $$text =~ s!(?<=&quot;).*?(?=&quot;)!&inner_link_($session,$&) || $&!ge;
 }
 
+sub refer_urlmap{
+    my ($title,$key,$session) = @_;
+    if ( my $urlmap = $session->{urlmap} ){
+        if (my $url = $urlmap->{$key} ){
+            return &verb(sprintf('<a href="%s"%s>',$url,$::target)).$title.'</a>';
+        }
+    }
+    "[$title][$key]";
+}
+
 sub preprocess_outerlink{ ### [...](http://...) style ###
-    ${$_[0]} =~ s!\[([^\]]+)\]\(((?:\.\.?/|$::PROTOCOL://)[^\)]+)\)!
+    my ($text,$session)=@_;
+    $$text =~ s!\[([^\]]+)\]\(((?:\.\.?/|$::PROTOCOL://)[^\)]+)\)!
         &verb(sprintf('<a href="%s"%s>',$2,$::target)).$1.'</a>'!goe;
+    $$text =~ s!\[(.*?)\]\[(.*?)\]!&refer_urlmap($1,$2,$session)!goe;
 }
 
 sub plugin_ref{
