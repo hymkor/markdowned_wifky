@@ -509,6 +509,7 @@ HERE
 
 ```
 [text](http://example.com/)
+[text][linkref] and [linkref]: URL
 http://example.com/
 ```
 
