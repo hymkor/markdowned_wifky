@@ -187,7 +187,7 @@ sub init_globals{
     @::http_header = ( "Content-type: text/html; charset=$::charset" );
 
     @::html_header = (
-      qq(<meta http-equiv="Content-Type" content="text/html; charset=$::charset">\n<meta http-equiv="Content-Style-Type" content="text/css">\n<meta name="generator" content="markdowned wifky $::version">\n<link rel="start" href="$::me">\n<link rel="index" href="$::me?a=index">)
+      qq(<meta charset="$::charset">\n<meta http-equiv="Content-Style-Type" content="text/css">\n<meta name="generator" content="markdowned wifky $::version">\n<link rel="start" href="$::me">\n<link rel="index" href="$::me?a=index">)
     );
 
     @::body_header = (
