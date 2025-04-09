@@ -2776,7 +2776,7 @@ sub block_listing{ ### <UL>... block ###
     &puts('<ul>');
     my $close='';
     foreach( @list ){
-        my $body=&preprocess($_->[1]);
+        my $body=&preprocess($_->[1],$session);
         if( $_->[0] < $indent && $level > 0 ){
             $level--;
             &puts("$close</ul></li><li>$body");
