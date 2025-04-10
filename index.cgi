@@ -2868,7 +2868,7 @@ sub block_centering{ ### >> ... <<
             $fragment .= $line;
         }
     }
-    &puts('<p>'.&preprocess('&gt;&gt;'.$fragment).'</p>');
+    &puts('<p>'.&preprocess('&gt;&gt;'.$fragment).'</p>',$session);
     1;
 }
 
