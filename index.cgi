@@ -2615,21 +2615,32 @@ sub preprocess_innerlink{ ### [[ ... | ... ]] ###
     $$text =~ s!(?<=&quot;).*?(?=&quot;)!&inner_link_($session,$&) || $&!ge;
 }
 
-sub refer_urlmap{
+sub refer_urlmaps{
     my ($title,$key,$session) = @_;
     if ( my $urlmap = $session->{urlmap} ){
         if (my $url = $urlmap->{$key} ){
             return &verb(sprintf('<a href="%s"%s>',$url,$::target)).$title.'</a>';
         }
     }
-    "[$title][$key]";
+    0;
+}
+
+sub refer_urlmap1{
+    my ($title,$key,$session) = @_;
+    &refer_urlmaps($title,$key,$session) || "[$title][$key]";
+}
+
+sub refer_urlmap2{
+    my ($key,$session) = @_;
+    &refer_urlmaps($key,$key,$session) || "[$key]";
 }
 
 sub preprocess_outerlink{ ### [...](http://...) style ###
     my ($text,$session)=@_;
     $$text =~ s!\[([^\]]+)\]\(((?:\.\.?/|$::PROTOCOL://)[^\)]+)\)!
         &verb(sprintf('<a href="%s"%s>',$2,$::target)).$1.'</a>'!goe;
-    $$text =~ s!\[(.*?)\]\[(.*?)\]!&refer_urlmap($1,$2,$session)!goe;
+    $$text =~ s!\[(.*?)\]\[(.*?)\]!&refer_urlmap1($1,$2,$session)!goe;
+    $$text =~ s!\[(.*?)\]!&refer_urlmap2($1,$session)!goe;
 }
 
 sub plugin_ref{
