@@ -304,6 +304,7 @@ sub init_globals{
         ],
     );
     %::inline_syntax_plugin = (
+        '199_newfnotes'  => \&preprocess_newfnotes ,
         '200_innerlink2' => \&preprocess_innerlink ,
         '400_outerlink2' => \&preprocess_outerlink ,
         '600_htmltag'    => \&preprecess_htmltag ,
@@ -323,6 +324,7 @@ sub init_globals{
     );
     %::call_syntax_plugin = (
         '100_verbatim'       => \&call_verbatim ,
+        '140_registerfn'     => \&call_register_fn ,
         '150_registerurl'    => \&call_register_url ,
         '200_blockhtml'      => \&call_blockhtml ,
         '500_block_syntax'   => \&call_block ,
@@ -2221,6 +2223,19 @@ sub call_verbatim{
     ${$_[0]} =~ s!`([^`]+)`!&verb("<tt>$1</tt>")!gesm;
 }
 
+sub register_fn{
+    my ($key,$val,$session) = @_;
+    my $fn = ($session->{newfootnotes} ||= {});
+    $fn->{$key} = $val;
+    '';
+}
+
+sub call_register_fn{
+    my ($html,$session) = @_;
+    $$html =~ s!^\[\^(.*?)\]: (.*)$!&register_fn($1,$2,$session)!gesm;
+    '';
+}
+
 sub register_url{
     my ($key,$val,$session) = @_;
     my $urlmap = ($session->{urlmap} ||= {});
@@ -2565,6 +2580,30 @@ sub cr2br{
     $s =~ s/\n/\n<br>/g;
     $s =~ s/ /&nbsp;/g;
     $s;
+}
+
+sub refer_newfnotes{
+    my ($key,$session) = @_;
+    if ( my $fnotes = $session->{newfootnotes} ){
+        if ( my $footnotetext = $fnotes->{$key} ){
+            push( @{$session->{footnotes}} , $footnotetext);
+
+            my $title = $::form{p};
+            my $i=$#{$session->{footnotes}} + 1;
+            my %attr=( title=>&strip_tag($footnotetext)  );
+            $attr{name}="fm$i" if $session->{index};
+
+            return '<sup>' .
+                &anchor("*$i", { p=>$title } , \%attr , "#ft$i" ) .
+                '</sup>'
+        }
+    }
+    "[^$key]";
+}
+
+sub preprocess_newfnotes{
+    my ($text,$session) = @_;
+    $$text =~ s/\[\^(.*?)\]/&refer_newfnotes($1,$session)/ge;
 }
 
 sub preprocess_innerlink{ ### [[ ... | ... ]] ###
