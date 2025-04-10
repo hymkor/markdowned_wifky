@@ -5,7 +5,7 @@ BEGIN{
     eval{ require 'warnings.pm'; }; warnings->import() unless $@;
 }
 
-$::version  = 'based on wifky-1.6.0_1';
+$::version  = 'v0.3.0 based on wifky-1.6.0_1';
 $::PROTOCOL = '(?:s?https?|ftp)';
 $::RXURL    = '(?:s?https?|ftp)://[-\\w.!~*\'();/?:@&=+$,%#]+' ;
 $::charset  = 'UTF-8';
